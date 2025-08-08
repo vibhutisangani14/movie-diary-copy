@@ -4,8 +4,65 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie Dairy Homepage</title>
-    <script src="main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
-  <body></body>
+  <body class="bg-black m-[0px] p-[0px] box-border">
+    <header>
+      <nav class="flex items-center justify-between">
+        <div class="flex items-center">
+          <img
+            src="assets/logo.png"
+            alt="Movie Diary Logo"
+            class="w-[100px] h-[100px] mx-2"
+          />
+          <div>
+            <div class="ml-5 text-white font-serif text-[1rem]">Home</div>
+          </div>
+          <div>
+            <div class="text-white font-serif ml-8 text-[1rem]">Journal</div>
+          </div>
+        </div>
+
+        <div class="flex items-center">
+          <div id="searchWrapper" class="relative flex items-center">
+            <!-- Search Icon Button -->
+            <button
+              id="searchBtn"
+              class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 focus:outline-none"
+            >
+              <svg
+                class="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M21 21l-4.35-4.35M17 10.5A6.5 6.5 0 104 10.5a6.5 6.5 0 0013 0z"
+                />
+              </svg>
+            </button>
+
+            <!-- Search Input -->
+            <input
+              id="searchInput"
+              type="text"
+              autocomplete="off"
+              placeholder="Search..."
+              class="w-0 opacity-0 transition-all duration-300 ease-in-out pl-3 py-1 mx-0 bg-gray-800 text-white placeholder:text-white placeholder:text-[0.9rem] rounded-full outline-none border border-gray-600 focus:border-white"
+            />
+          </div>
+          <div class="text-white font-serif text-[1rem] ml-2">Groot</div>
+          <img
+            src="assets/profile.png"
+            alt="Profile Picture"
+            class="w-[2.5rem] h-[2.5rem] mr-[2.5rem] ml-[1rem]"
+          />
+        </div>
+      </nav>
+    </header>
+    <script src="main.js"></script>
+  </body>
 </html>
