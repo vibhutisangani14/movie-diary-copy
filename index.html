@@ -13,7 +13,7 @@
           <img
             src="assets/logo.png"
             alt="Movie Diary Logo"
-            class="w-[100px] h-[100px] mx-2"
+            class="w-[100px] h-[100px] mx-6"
           />
           <div>
             <div class="ml-5 text-white font-serif text-[1rem]">Home</div>
@@ -25,7 +25,6 @@
 
         <div class="flex items-center">
           <div id="searchWrapper" class="relative flex items-center">
-            <!-- Search Icon Button -->
             <button
               id="searchBtn"
               class="p-2 rounded-full bg-gray-800 hover:bg-gray-700 focus:outline-none"
@@ -45,7 +44,7 @@
               </svg>
             </button>
 
-            <div class="relative">
+            <div class="relative z-50">
               <input
                 id="searchInput"
                 type="text"
@@ -55,7 +54,7 @@
               />
               <div
                 id="suggestions"
-                class="absolute mt-1 w-full bg-gray-800 border text-white border-gray-300 rounded shadow-lg max-h-40 overflow-y-auto hidden"
+                class="absolute mt-1 w-full bg-gray-800 border text-white border-gray-300 rounded shadow-lg max-h-60 overflow-y-auto hidden"
               ></div>
             </div>
           </div>
