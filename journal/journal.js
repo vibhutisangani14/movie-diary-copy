@@ -1,4 +1,9 @@
+import { renderSearchList, searchEventListners } from "../search.js";
+
 const movieListContainer = document.querySelector("#movieList-journal");
+
+searchEventListners();
+renderSearchList();
 
 const getMovieFromLocalStorage = () => {
   const favouriteMovies =

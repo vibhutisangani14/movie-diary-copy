@@ -13,13 +13,17 @@
           <img
             src="assets/logo.png"
             alt="Movie Diary Logo"
-            class="w-[100px] h-[100px] mx-6"
+            class="w-[90px] h-[90px] ml-6"
           />
           <div>
-            <div class="ml-5 text-white font-serif text-[1rem]">Home</div>
+            <div class="ml-6 text-white font-serif text-[1rem]">
+              <a href="index.html">Home</a>
+            </div>
           </div>
           <div>
-            <div class="text-white font-serif ml-8 text-[1rem]">Journal</div>
+            <div class="text-white font-serif ml-8 text-[1rem]">
+              <a href="journal/journal.html">Journal</a>
+            </div>
           </div>
         </div>
 
@@ -67,7 +71,8 @@
         </div>
       </nav>
     </header>
-    <main>
+    <main class="bg-[#141622]">
+      <section id="image-container"></section>
       <section
         id="movieList-container"
         class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-5 p-4 m-4"
@@ -75,6 +80,6 @@
         <!-- Movie cards will be rendered here -->
       </section>
     </main>
-    <script src="main.js"></script>
+    <script type="module" src="main.js"></script>
   </body>
 </html>
