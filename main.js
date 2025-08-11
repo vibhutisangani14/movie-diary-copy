@@ -55,12 +55,35 @@ const renderMovieList = (movies) => {
           <path stroke-linecap="round" stroke-linejoin="round" 
                 d="M21.435 4.582a5.373 5.373 0 00-7.606 0L12 6.41l-1.829-1.828a5.373 5.373 0 00-7.606 7.606l1.828 1.828L12 21.435l7.607-7.606 1.828-1.828a5.373 5.373 0 000-7.606z" />
         </svg>
+          <svg
+          xmlns="http://www.w3.org/2000/svg"
+          id="notes-icon"
+          class="ml-2 w-5 h-5 text-center cursor-pointer mt-1"
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-file-text"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+          />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <line x1="10" y1="9" x2="8" y2="9" />
+        </svg>
       </div>
       <p class="text-gray-300">Info: ${movie.overview}</p>
     `;
 
     movieListContainer.appendChild(movieElement);
     saveMovieToLocalStorage(movie, movieElement);
+    saveNotesToLocalStorage(movie, movieElement);
   });
 };
 
@@ -85,6 +108,48 @@ const saveMovieToLocalStorage = (movie, movieElement) => {
     }
 
     localStorage.setItem("favouriteMovie", JSON.stringify(currentFavourites));
+  });
+};
+
+// Save Notes to local storage
+const saveNotesToLocalStorage = (movie, movieElement) => {
+  const notesIcon = movieElement.querySelector("#notes-icon");
+
+  notesIcon.addEventListener("click", () => {
+    const dialogOverlay = document.querySelector("#dialogOverlay");
+    const noteText = document.querySelector("#noteText");
+    const saveBtn = document.querySelector("#saveBtn");
+    const closeBtn = document.querySelector("#closeBtn");
+    const storageKey = "Notes";
+
+    const savedNotes = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+    const existingNote = savedNotes.find((n) => n.id === movie.id);
+    noteText.value = existingNote ? existingNote.content : "";
+
+    dialogOverlay.classList.remove("hidden");
+
+    saveBtn.onclick = () => {
+      const filtered = savedNotes.filter((n) => n.id !== movie.id);
+
+      if (noteText.value.trim()) {
+        filtered.push({
+          id: movie.id,
+          content: noteText.value.trim(),
+        });
+      }
+
+      localStorage.setItem(storageKey, JSON.stringify(filtered));
+
+      dialogOverlay.classList.add("hidden");
+    };
+
+    closeBtn.onclick = () => dialogOverlay.classList.add("hidden");
+    dialogOverlay.onclick = (e) => {
+      if (e.target === dialogOverlay) {
+        dialogOverlay.classList.add("hidden");
+      }
+    };
   });
 };
 

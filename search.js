@@ -43,7 +43,7 @@ const renderSearchList = () => {
       const div = document.createElement("div");
 
       div.className =
-        "flex flex-row px-3 py-2 hover:bg-gray-100 hover:text-black cursor-pointer";
+        "flex flex-row px-3 py-2 hover:bg-gray-700 cursor-pointer";
 
       div.innerHTML = `
      <img
