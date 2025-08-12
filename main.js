@@ -184,3 +184,5 @@ const fetchAndRenderMovieList = async () => {
   }
 };
 fetchAndRenderMovieList();
+
+export { toggleOverviewText };
