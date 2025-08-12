@@ -24,20 +24,25 @@ const fetchMovieList = async () => {
 const renderMovieList = (movies) => {
   imageContainer.innerHTML = `
     <img
-          src="https://image.tmdb.org/t/p/w500${movies[3].backdrop_path}]"
-          alt="Poster"
-          class="w-full h-[400px] cover"
-        />`;
+      src="https://image.tmdb.org/t/p/w500${movies[3].backdrop_path}"
+      alt="Poster"
+      class="w-full h-[400px] cover"
+    />`;
 
   movies.forEach((movie) => {
     const movieElement = document.createElement("div");
 
-    movieElement.className =
-      "max-auto bg-black text-white rounded-lg shadow-md";
+    movieElement.className = "max-auto  text-white rounded-lg shadow-md";
 
     const currentFavourites =
       JSON.parse(localStorage.getItem("favouriteMovie")) || [];
     const isFavourite = currentFavourites.some((m) => m.id === movie.id);
+
+    //overview text
+    const shortOverview =
+      movie.overview.length > 100
+        ? movie.overview.slice(0, 100) + "..."
+        : movie.overview;
 
     movieElement.innerHTML = `
       <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${
@@ -78,12 +83,35 @@ const renderMovieList = (movies) => {
           <line x1="10" y1="9" x2="8" y2="9" />
         </svg>
       </div>
-      <p class="text-gray-300">Info: ${movie.overview}</p>
+      <p class="text-gray-300">
+        Info: <span class="short-text">${shortOverview}</span>
+        <span class="full-text hidden">${movie.overview}</span>
+        <button class="toggle-btn text-blue-400 underline ml-1">Read more</button>
+      </p>
     `;
-
     movieListContainer.appendChild(movieElement);
+    toggleOverviewText(movieElement);
     saveMovieToLocalStorage(movie, movieElement);
     saveNotesToLocalStorage(movie, movieElement);
+  });
+};
+
+// Add toggle functionality
+const toggleOverviewText = (movieElement) => {
+  const toggleBtn = movieElement.querySelector(".toggle-btn");
+  const shortText = movieElement.querySelector(".short-text");
+  const fullText = movieElement.querySelector(".full-text");
+
+  toggleBtn.addEventListener("click", () => {
+    if (fullText.classList.contains("hidden")) {
+      shortText.classList.add("hidden");
+      fullText.classList.remove("hidden");
+      toggleBtn.textContent = "Read less";
+    } else {
+      shortText.classList.remove("hidden");
+      fullText.classList.add("hidden");
+      toggleBtn.textContent = "Read more";
+    }
   });
 };
 
