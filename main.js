@@ -1,8 +1,6 @@
 import { renderSearchList, searchEventListners } from "./search.js";
 
 const movieListContainer = document.querySelector("#movieList-container");
-const imageContainer = document.querySelector("#image-container");
-
 const api_key = "db85a489a7f0131f0f43f57e6a905f19";
 
 searchEventListners();
@@ -22,13 +20,6 @@ const fetchMovieList = async () => {
 
 //Rendering movie list to the DOM
 const renderMovieList = (movies) => {
-  imageContainer.innerHTML = `
-    <img
-      src="https://image.tmdb.org/t/p/w500${movies[3].backdrop_path}"
-      alt="Poster"
-      class="w-full h-[400px] cover"
-    />`;
-
   movies.forEach((movie) => {
     const movieElement = document.createElement("div");
 
