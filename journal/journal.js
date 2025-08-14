@@ -1,4 +1,5 @@
 import { renderSearchList, searchEventListners } from "../search.js";
+import { toggleOverviewText } from "../main.js";
 
 const movieListContainer = document.querySelector("#movieList-journal");
 
@@ -10,9 +11,14 @@ const getMovieFromLocalStorage = () => {
     JSON.parse(localStorage.getItem("favouriteMovie")) || [];
   movieListContainer.innerHTML = ""; // Clear existing content
   favouriteMovies.forEach((movie) => {
+    //overview text
+    const shortOverview =
+      movie.overview.length > 100
+        ? movie.overview.slice(0, 100) + "..."
+        : movie.overview;
+
     const movieElement = document.createElement("div");
-    movieElement.className =
-      "max-auto bg-black text-white rounded-lg shadow-md";
+    movieElement.className = "max-auto text-white rounded-lg shadow-md";
     movieElement.innerHTML = `
       <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title} poster" 
         class="border-gray-800 rounded-lg border-4 hover:border-white
@@ -43,10 +49,15 @@ const getMovieFromLocalStorage = () => {
           <line x1="10" y1="9" x2="8" y2="9" />
         </svg>
       </div>
-     <p class="text-gray-300">Info: ${movie.overview}</p>
+     <p class="text-gray-300">
+        Info: <span class="short-text">${shortOverview}</span>
+        <span class="full-text hidden">${movie.overview}</span>
+        <button class="toggle-btn text-blue-400 underline ml-1">Read more</button>
+      </p>
 
     `;
     movieListContainer.appendChild(movieElement);
+    toggleOverviewText(movieElement);
     saveNotesToLocalStorage(movie, movieElement);
   });
 };
