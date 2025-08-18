@@ -1,0 +1,61 @@
+<!DOCTYPE html><html lang=en><script type=module src=/movie-diary-copy.2207ed5d.js></script><meta charset=UTF-8><meta name=viewport content="width=device-width, initial-scale=1.0"><title>Journal Page</title><script src=https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4></script><body class="bg-black box-border m-[0px] p-[0px]">
+    <header>
+      <nav class="flex items-center justify-between">
+        <div class="flex items-center">
+          <img src=/logo.c93b285f.png alt="Movie Diary Logo" class="h-[90px] ml-6 w-[90px]">
+          <div>
+            <div class="font-serif ml-6 text-[1rem] text-white">
+              <a href=/index.html>Home</a>
+            </div>
+          </div>
+          <div>
+            <div class="font-serif ml-8 text-[1rem] text-white">
+              <a href=/journal/journal.js>Journal</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center">
+          <div id=searchWrapper class="flex items-center relative">
+            <button id=searchBtn class="bg-gray-800 cursor-pointer focus:outline-none hover:bg-gray-700 p-2 rounded-full">
+              <svg fill=none stroke=currentColor stroke-width=2 class="h-5 text-white w-5" viewBox="0 0 24 24"><path stroke-linecap=round stroke-linejoin=round d="m21 21-4.35-4.35M17 10.5a6.5 6.5 0 1 0-13 0 6.5 6.5 0 0 0 13 0"/></svg>
+            </button>
+
+            <div class="relative z-50">
+              <input id=searchInput autocomplete=off placeholder=Search... class="bg-gray-800 border border-gray-600 duration-300 ease-in-out focus:border-white mx-0 opacity-0 outline-none pl-3 placeholder:text-[0.9rem] placeholder:text-white py-1 rounded-full text-white transition-all w-0">
+              <div id=suggestions class="absolute bg-gray-800 border border-gray-300 hidden max-h-60 mt-1 overflow-y-auto rounded shadow-lg text-white w-full"></div>
+            </div>
+          </div>
+          <div class="font-serif ml-2 text-[1rem] text-white">Groot</div>
+          <img src=/profile.44e8460b.png alt="Profile Picture" class="h-[2.5rem] ml-[1rem] mr-[2.5rem] w-[2.5rem]">
+        </div>
+      </nav>
+    </header>
+
+    <main class=bg-[#141622]>
+      <h1 class="font-bold pl-9 pt-5 text-2xl text-white">My Journal</h1>
+      <section>
+        <div id=dialogOverlay class="bg-black bg-opacity-50 fixed flex hidden inset-0 items-center justify-center">
+          <div id=dialogBox class="bg-white flex flex-col max-w-full p-6 rounded-lg shadow-lg w-96">
+            <h2 class="font-semibold mb-4 text-2xl">Your Notes</h2>
+            <textarea id=noteText placeholder="Type your note here..." class="border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 h-40 mb-4 p-3 resize-y rounded"></textarea>
+            <div class="flex justify-end space-x-3">
+              <button id=closeBtn class="border border-gray-300 hover:bg-gray-100 px-4 py-2 rounded transition">
+                Close
+              </button>
+              <button id=saveBtn class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white transition">
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id=movieList-journal class="gap-5 grid grid-cols-3 lg:grid-cols-5 m-5 md:grid-cols-3 px-4">
+        
+      </section>
+    </main>
+
+    <script type=module src=/journal.559a6f2b.js></script>
+  
+

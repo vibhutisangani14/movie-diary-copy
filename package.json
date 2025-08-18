@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "parcel": "^2.15.4"
+  },
+  "name": "my-parcel-app",
+  "source": "src/index.html",
+  "scripts": {
+    "dev": "parcel",
+    "build": "parcel build"
+  }
+}
