@@ -929,7 +929,7 @@ const renderMovieList = (movies)=>{
         <button class="toggle-btn text-blue-400 underline ml-1">Read more</button>
       </p>
     `;
-        movieListContainer.appendChild(movieElement);
+        movieListContainer?.appendChild(movieElement);
         toggleOverviewText(movieElement);
         saveMovieToLocalStorage(movie, movieElement);
         saveNotesToLocalStorage(movie, movieElement);
