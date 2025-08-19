@@ -1,5 +1,6 @@
 import { renderSearchList, searchEventListners } from "../search.js";
 import { toggleOverviewText } from "../app.js";
+import { saveNotesToLocalStorage } from "../storage.js";
 
 const movieListContainer = document.querySelector("#movieList-journal");
 
@@ -59,50 +60,6 @@ const getMovieFromLocalStorage = () => {
     movieListContainer.appendChild(movieElement);
     toggleOverviewText(movieElement);
     saveNotesToLocalStorage(movie, movieElement);
-  });
-};
-
-// Save Notes to local storage
-const saveNotesToLocalStorage = (movie, movieElement) => {
-  const notesIcon = movieElement.querySelector("#notes-icon");
-
-  notesIcon.addEventListener("click", () => {
-    const dialogOverlay = document.querySelector("#dialogOverlay");
-    const noteText = document.querySelector("#noteText");
-    const saveBtn = document.querySelector("#saveBtn");
-    const closeBtn = document.querySelector("#closeBtn");
-    const storageKey = "Notes";
-
-    const savedNotes = JSON.parse(localStorage.getItem(storageKey)) || [];
-
-    const existingNote = savedNotes.find((n) => n.id === movie.id);
-    console.log(savedNotes[0].id + " " + movie.id);
-
-    noteText.value = existingNote ? existingNote.content : "";
-
-    dialogOverlay.classList.remove("hidden");
-
-    saveBtn.onclick = () => {
-      const filtered = savedNotes.filter((n) => n.id !== movie.id);
-
-      if (noteText.value.trim()) {
-        filtered.push({
-          id: movie.id,
-          content: noteText.value.trim(),
-        });
-      }
-
-      localStorage.setItem(storageKey, JSON.stringify(filtered));
-
-      dialogOverlay.classList.add("hidden");
-    };
-
-    closeBtn.onclick = () => dialogOverlay.classList.add("hidden");
-    dialogOverlay.onclick = (e) => {
-      if (e.target === dialogOverlay) {
-        dialogOverlay.classList.add("hidden");
-      }
-    };
   });
 };
 
