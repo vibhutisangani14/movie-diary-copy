@@ -160,7 +160,7 @@
       });
     }
   }
-})({"7wZbQ":[function(require,module,exports,__globalThis) {
+})({"f5DVJ":[function(require,module,exports,__globalThis) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
@@ -671,17 +671,11 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "toggleOverviewText", ()=>toggleOverviewText);
 var _searchJs = require("./search.js");
+var _storageJs = require("../storage.js");
+var _networkJs = require("../network.js");
 const movieListContainer = document.querySelector("#movieList-container");
-const api_key = "db85a489a7f0131f0f43f57e6a905f19";
 (0, _searchJs.searchEventListners)();
 (0, _searchJs.renderSearchList)();
-//fetching movie list from The Movie Database API
-const fetchMovieList = async ()=>{
-    const response = await fetch(`https://api.themoviedb.org/3/movie/popular?language=en-US&page=1&api_key=${api_key}`);
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const data = await response.json();
-    return data.results;
-};
 //Rendering movie list to the DOM
 const renderMovieList = (movies)=>{
     movies.forEach((movie)=>{
@@ -736,8 +730,8 @@ const renderMovieList = (movies)=>{
     `;
         movieListContainer?.appendChild(movieElement);
         toggleOverviewText(movieElement);
-        saveMovieToLocalStorage(movie, movieElement);
-        saveNotesToLocalStorage(movie, movieElement);
+        (0, _storageJs.saveMovieToLocalStorage)(movie, movieElement);
+        (0, _storageJs.saveNotesToLocalStorage)(movie, movieElement);
     });
 };
 // Add toggle functionality
@@ -757,7 +751,148 @@ const toggleOverviewText = (movieElement)=>{
         }
     });
 };
+// Fetching and rendering the movie list
+const fetchAndRenderMovieList = async ()=>{
+    try {
+        const movies = await (0, _networkJs.fetchMovieList)();
+        console.log("Fetched movies:", movies);
+        renderMovieList(movies);
+    } catch (error) {
+        console.error("Error fetching movie list:", error);
+        return;
+    }
+};
+fetchAndRenderMovieList();
+
+},{"./search.js":"gZ0W8","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../storage.js":"eOB4E","../network.js":"h1Qyk"}],"gZ0W8":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "searchEventListners", ()=>searchEventListners);
+parcelHelpers.export(exports, "renderSearchList", ()=>renderSearchList);
+var _networkJs = require("../network.js");
+const searchBtn = document.getElementById("searchBtn");
+const searchBox = document.getElementById("searchInput");
+const suggestions = document.getElementById("suggestions");
+const searchEventListners = ()=>{
+    searchBtn.addEventListener("click", (e)=>{
+        e.stopPropagation(); // Prevent closing immediately
+        searchBox.classList.remove("w-0", "opacity-0", "mx-0");
+        searchBox.classList.add("w-64", "opacity-100", "mx-2");
+        searchBox.focus();
+    });
+    document.addEventListener("click", (e)=>{
+        if (!searchWrapper.contains(e.target)) {
+            searchBox.classList.remove("w-64", "opacity-100", "mx-2");
+            searchBox.classList.add("w-0", "opacity-0", "mx-0");
+            searchBox.blur();
+        }
+    });
+};
+const renderSearchList = ()=>{
+    //fetching Search list from The Movie Database API
+    (0, _networkJs.fetchSearchList)();
+    //Rendering Search list to the DOM
+    const renderSearchList = (movies, query)=>{
+        const filtered = movies.filter((movie)=>movie.title.toLowerCase().includes(query));
+        filtered.forEach((movie)=>{
+            const div = document.createElement("div");
+            div.className = "flex flex-row px-3 py-2 hover:bg-gray-700 cursor-pointer";
+            div.innerHTML = `
+     <img
+                    src="https://image.tmdb.org/t/p/w500/${movie.poster_path}"
+                    alt="demo"
+                    class="w-[40px] h-[60px]"
+                  />
+                  <div class="flex flex-col justify-center">
+                    <div class="ml-2 text-[0.8rem]">${movie.title}</div>
+                  </div>`;
+            div.addEventListener("click", ()=>{
+                searchBox.value = movie.title;
+                suggestions.classList.add("hidden");
+            });
+            suggestions.appendChild(div);
+            suggestions.classList.toggle("hidden", filtered.length === 0);
+        });
+    };
+    // Fetching and rendering the Search list
+    const fetchAndRenderSearchList = async (query)=>{
+        try {
+            const movies = await (0, _networkJs.fetchSearchList)(query);
+            console.log("Fetched movies:", movies);
+            renderSearchList(movies, query);
+        } catch (error) {
+            console.error("Error fetching movie list:", error);
+            return;
+        }
+    };
+    searchBox.addEventListener("input", ()=>{
+        const query = searchBox.value.toLowerCase();
+        suggestions.innerHTML = "";
+        if (query) fetchAndRenderSearchList(query);
+        else suggestions.classList.add("hidden");
+    });
+    document.addEventListener("click", (event)=>{
+        if (!event.target.closest("#searchBox") && !event.target.closest("#suggestions")) suggestions.classList.add("hidden");
+    });
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../network.js":"h1Qyk"}],"jnFvT":[function(require,module,exports,__globalThis) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"h1Qyk":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "fetchMovieList", ()=>fetchMovieList);
+parcelHelpers.export(exports, "fetchSearchList", ()=>fetchSearchList);
+const api_key = "db85a489a7f0131f0f43f57e6a905f19";
+//fetching movie list from The Movie Database API
+const fetchMovieList = async ()=>{
+    const response = await fetch(`https://api.themoviedb.org/3/movie/popular?language=en-US&page=1&api_key=${api_key}`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.results;
+};
+const fetchSearchList = async (queryP)=>{
+    const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${queryP}&
+    include_adult=false&language=en-US&page=1&api_key=${api_key}`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.results;
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"eOB4E":[function(require,module,exports,__globalThis) {
 // Save movie to local storage
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "saveMovieToLocalStorage", ()=>saveMovieToLocalStorage);
+parcelHelpers.export(exports, "saveNotesToLocalStorage", ()=>saveNotesToLocalStorage);
 const saveMovieToLocalStorage = (movie, movieElement)=>{
     const favIcon = movieElement.querySelector(".fav-icon");
     favIcon.addEventListener("click", ()=>{
@@ -806,127 +941,7 @@ const saveNotesToLocalStorage = (movie, movieElement)=>{
         };
     });
 };
-// Fetching and rendering the movie list
-const fetchAndRenderMovieList = async ()=>{
-    try {
-        const movies = await fetchMovieList();
-        console.log("Fetched movies:", movies);
-        renderMovieList(movies);
-    } catch (error) {
-        console.error("Error fetching movie list:", error);
-        return;
-    }
-};
-fetchAndRenderMovieList();
 
-},{"./search.js":"gZ0W8","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"gZ0W8":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "searchEventListners", ()=>searchEventListners);
-parcelHelpers.export(exports, "renderSearchList", ()=>renderSearchList);
-const searchBtn = document.getElementById("searchBtn");
-const searchBox = document.getElementById("searchInput");
-const suggestions = document.getElementById("suggestions");
-const api_key = "db85a489a7f0131f0f43f57e6a905f19";
-const searchEventListners = ()=>{
-    searchBtn.addEventListener("click", (e)=>{
-        e.stopPropagation(); // Prevent closing immediately
-        searchBox.classList.remove("w-0", "opacity-0", "mx-0");
-        searchBox.classList.add("w-64", "opacity-100", "mx-2");
-        searchBox.focus();
-    });
-    document.addEventListener("click", (e)=>{
-        if (!searchWrapper.contains(e.target)) {
-            searchBox.classList.remove("w-64", "opacity-100", "mx-2");
-            searchBox.classList.add("w-0", "opacity-0", "mx-0");
-            searchBox.blur();
-        }
-    });
-};
-const renderSearchList = ()=>{
-    //fetching Search list from The Movie Database API
-    const fetchSearchList = async (queryP)=>{
-        const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${queryP}&
-    include_adult=false&language=en-US&page=1&api_key=${api_key}`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        return data.results;
-    };
-    //Rendering Search list to the DOM
-    const renderSearchList = (movies, query)=>{
-        const filtered = movies.filter((movie)=>movie.title.toLowerCase().includes(query));
-        filtered.forEach((movie)=>{
-            const div = document.createElement("div");
-            div.className = "flex flex-row px-3 py-2 hover:bg-gray-700 cursor-pointer";
-            div.innerHTML = `
-     <img
-                    src="https://image.tmdb.org/t/p/w500/${movie.poster_path}"
-                    alt="demo"
-                    class="w-[40px] h-[60px]"
-                  />
-                  <div class="flex flex-col justify-center">
-                    <div class="ml-2 text-[0.8rem]">${movie.title}</div>
-                  </div>`;
-            div.addEventListener("click", ()=>{
-                searchBox.value = movie.title;
-                suggestions.classList.add("hidden");
-            });
-            suggestions.appendChild(div);
-            suggestions.classList.toggle("hidden", filtered.length === 0);
-        });
-    };
-    // Fetching and rendering the Search list
-    const fetchAndRenderSearchList = async (query)=>{
-        try {
-            const movies = await fetchSearchList(query);
-            console.log("Fetched movies:", movies);
-            renderSearchList(movies, query);
-        } catch (error) {
-            console.error("Error fetching movie list:", error);
-            return;
-        }
-    };
-    searchBox.addEventListener("input", ()=>{
-        const query = searchBox.value.toLowerCase();
-        suggestions.innerHTML = "";
-        if (query) fetchAndRenderSearchList(query);
-        else suggestions.classList.add("hidden");
-    });
-    document.addEventListener("click", (event)=>{
-        if (!event.target.closest("#searchBox") && !event.target.closest("#suggestions")) suggestions.classList.add("hidden");
-    });
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"jnFvT":[function(require,module,exports,__globalThis) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, '__esModule', {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}]},["7wZbQ","2R06K"], "2R06K", "parcelRequire8370", {})
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}]},["f5DVJ","2R06K"], "2R06K", "parcelRequire8370", {})
 
 //# sourceMappingURL=movie-diary-copy.0f77c784.js.map

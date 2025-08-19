@@ -160,7 +160,7 @@
       });
     }
   }
-})({"zgurm":[function(require,module,exports,__globalThis) {
+})({"bjC8Z":[function(require,module,exports,__globalThis) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
@@ -669,6 +669,7 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 },{}],"2O6fb":[function(require,module,exports,__globalThis) {
 var _searchJs = require("../search.js");
 var _appJs = require("../app.js");
+var _storageJs = require("../../storage.js");
 const movieListContainer = document.querySelector("#movieList-journal");
 (0, _searchJs.searchEventListners)();
 (0, _searchJs.renderSearchList)();
@@ -719,49 +720,20 @@ const getMovieFromLocalStorage = ()=>{
     `;
         movieListContainer.appendChild(movieElement);
         (0, _appJs.toggleOverviewText)(movieElement);
-        saveNotesToLocalStorage(movie, movieElement);
-    });
-};
-// Save Notes to local storage
-const saveNotesToLocalStorage = (movie, movieElement)=>{
-    const notesIcon = movieElement.querySelector("#notes-icon");
-    notesIcon.addEventListener("click", ()=>{
-        const dialogOverlay = document.querySelector("#dialogOverlay");
-        const noteText = document.querySelector("#noteText");
-        const saveBtn = document.querySelector("#saveBtn");
-        const closeBtn = document.querySelector("#closeBtn");
-        const storageKey = "Notes";
-        const savedNotes = JSON.parse(localStorage.getItem(storageKey)) || [];
-        const existingNote = savedNotes.find((n)=>n.id === movie.id);
-        console.log(savedNotes[0].id + " " + movie.id);
-        noteText.value = existingNote ? existingNote.content : "";
-        dialogOverlay.classList.remove("hidden");
-        saveBtn.onclick = ()=>{
-            const filtered = savedNotes.filter((n)=>n.id !== movie.id);
-            if (noteText.value.trim()) filtered.push({
-                id: movie.id,
-                content: noteText.value.trim()
-            });
-            localStorage.setItem(storageKey, JSON.stringify(filtered));
-            dialogOverlay.classList.add("hidden");
-        };
-        closeBtn.onclick = ()=>dialogOverlay.classList.add("hidden");
-        dialogOverlay.onclick = (e)=>{
-            if (e.target === dialogOverlay) dialogOverlay.classList.add("hidden");
-        };
+        (0, _storageJs.saveNotesToLocalStorage)(movie, movieElement);
     });
 };
 getMovieFromLocalStorage();
 
-},{"../search.js":"8gVq6","../app.js":"bNKaB"}],"8gVq6":[function(require,module,exports,__globalThis) {
+},{"../search.js":"8gVq6","../app.js":"bNKaB","../../storage.js":"kS9sU"}],"8gVq6":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "searchEventListners", ()=>searchEventListners);
 parcelHelpers.export(exports, "renderSearchList", ()=>renderSearchList);
+var _networkJs = require("../network.js");
 const searchBtn = document.getElementById("searchBtn");
 const searchBox = document.getElementById("searchInput");
 const suggestions = document.getElementById("suggestions");
-const api_key = "db85a489a7f0131f0f43f57e6a905f19";
 const searchEventListners = ()=>{
     searchBtn.addEventListener("click", (e)=>{
         e.stopPropagation(); // Prevent closing immediately
@@ -779,13 +751,7 @@ const searchEventListners = ()=>{
 };
 const renderSearchList = ()=>{
     //fetching Search list from The Movie Database API
-    const fetchSearchList = async (queryP)=>{
-        const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${queryP}&
-    include_adult=false&language=en-US&page=1&api_key=${api_key}`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        return data.results;
-    };
+    (0, _networkJs.fetchSearchList)();
     //Rendering Search list to the DOM
     const renderSearchList = (movies, query)=>{
         const filtered = movies.filter((movie)=>movie.title.toLowerCase().includes(query));
@@ -812,7 +778,7 @@ const renderSearchList = ()=>{
     // Fetching and rendering the Search list
     const fetchAndRenderSearchList = async (query)=>{
         try {
-            const movies = await fetchSearchList(query);
+            const movies = await (0, _networkJs.fetchSearchList)(query);
             console.log("Fetched movies:", movies);
             renderSearchList(movies, query);
         } catch (error) {
@@ -831,7 +797,7 @@ const renderSearchList = ()=>{
     });
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../network.js":"gukqw"}],"gkKU3":[function(require,module,exports,__globalThis) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -861,15 +827,12 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"bNKaB":[function(require,module,exports,__globalThis) {
+},{}],"gukqw":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "toggleOverviewText", ()=>toggleOverviewText);
-var _searchJs = require("./search.js");
-const movieListContainer = document.querySelector("#movieList-container");
+parcelHelpers.export(exports, "fetchMovieList", ()=>fetchMovieList);
+parcelHelpers.export(exports, "fetchSearchList", ()=>fetchSearchList);
 const api_key = "db85a489a7f0131f0f43f57e6a905f19";
-(0, _searchJs.searchEventListners)();
-(0, _searchJs.renderSearchList)();
 //fetching movie list from The Movie Database API
 const fetchMovieList = async ()=>{
     const response = await fetch(`https://api.themoviedb.org/3/movie/popular?language=en-US&page=1&api_key=${api_key}`);
@@ -877,6 +840,24 @@ const fetchMovieList = async ()=>{
     const data = await response.json();
     return data.results;
 };
+const fetchSearchList = async (queryP)=>{
+    const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${queryP}&
+    include_adult=false&language=en-US&page=1&api_key=${api_key}`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.results;
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bNKaB":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "toggleOverviewText", ()=>toggleOverviewText);
+var _searchJs = require("./search.js");
+var _storageJs = require("../storage.js");
+var _networkJs = require("../network.js");
+const movieListContainer = document.querySelector("#movieList-container");
+(0, _searchJs.searchEventListners)();
+(0, _searchJs.renderSearchList)();
 //Rendering movie list to the DOM
 const renderMovieList = (movies)=>{
     movies.forEach((movie)=>{
@@ -931,8 +912,8 @@ const renderMovieList = (movies)=>{
     `;
         movieListContainer?.appendChild(movieElement);
         toggleOverviewText(movieElement);
-        saveMovieToLocalStorage(movie, movieElement);
-        saveNotesToLocalStorage(movie, movieElement);
+        (0, _storageJs.saveMovieToLocalStorage)(movie, movieElement);
+        (0, _storageJs.saveNotesToLocalStorage)(movie, movieElement);
     });
 };
 // Add toggle functionality
@@ -952,7 +933,25 @@ const toggleOverviewText = (movieElement)=>{
         }
     });
 };
+// Fetching and rendering the movie list
+const fetchAndRenderMovieList = async ()=>{
+    try {
+        const movies = await (0, _networkJs.fetchMovieList)();
+        console.log("Fetched movies:", movies);
+        renderMovieList(movies);
+    } catch (error) {
+        console.error("Error fetching movie list:", error);
+        return;
+    }
+};
+fetchAndRenderMovieList();
+
+},{"./search.js":"8gVq6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../storage.js":"kS9sU","../network.js":"gukqw"}],"kS9sU":[function(require,module,exports,__globalThis) {
 // Save movie to local storage
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "saveMovieToLocalStorage", ()=>saveMovieToLocalStorage);
+parcelHelpers.export(exports, "saveNotesToLocalStorage", ()=>saveNotesToLocalStorage);
 const saveMovieToLocalStorage = (movie, movieElement)=>{
     const favIcon = movieElement.querySelector(".fav-icon");
     favIcon.addEventListener("click", ()=>{
@@ -1001,19 +1000,7 @@ const saveNotesToLocalStorage = (movie, movieElement)=>{
         };
     });
 };
-// Fetching and rendering the movie list
-const fetchAndRenderMovieList = async ()=>{
-    try {
-        const movies = await fetchMovieList();
-        console.log("Fetched movies:", movies);
-        renderMovieList(movies);
-    } catch (error) {
-        console.error("Error fetching movie list:", error);
-        return;
-    }
-};
-fetchAndRenderMovieList();
 
-},{"./search.js":"8gVq6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["zgurm","2O6fb"], "2O6fb", "parcelRequire8370", {})
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["bjC8Z","2O6fb"], "2O6fb", "parcelRequire8370", {})
 
 //# sourceMappingURL=journal.js.map

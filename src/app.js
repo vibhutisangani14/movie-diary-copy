@@ -1,6 +1,9 @@
 import { renderSearchList, searchEventListners } from "./search.js";
-import { saveMovieToLocalStorage, saveNotesToLocalStorage } from "./storage.js";
-import { fetchMovieList } from "./network.js";
+import {
+  saveMovieToLocalStorage,
+  saveNotesToLocalStorage,
+} from "../storage.js";
+import { fetchMovieList } from "../network.js";
 
 const movieListContainer = document.querySelector("#movieList-container");
 

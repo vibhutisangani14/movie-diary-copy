@@ -1,4 +1,4 @@
-import { fetchSearchList } from "./network.js";
+import { fetchSearchList } from "../network.js";
 
 const searchBtn = document.getElementById("searchBtn");
 const searchBox = document.getElementById("searchInput");
