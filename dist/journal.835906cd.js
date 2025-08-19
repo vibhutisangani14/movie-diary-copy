@@ -160,7 +160,7 @@
       });
     }
   }
-})({"8YqUS":[function(require,module,exports,__globalThis) {
+})({"i4KxG":[function(require,module,exports,__globalThis) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
@@ -669,6 +669,7 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 },{}],"cc4Va":[function(require,module,exports,__globalThis) {
 var _searchJs = require("../search.js");
 var _appJs = require("../app.js");
+var _storageJs = require("../../storage.js");
 const movieListContainer = document.querySelector("#movieList-journal");
 (0, _searchJs.searchEventListners)();
 (0, _searchJs.renderSearchList)();
@@ -719,40 +720,11 @@ const getMovieFromLocalStorage = ()=>{
     `;
         movieListContainer.appendChild(movieElement);
         (0, _appJs.toggleOverviewText)(movieElement);
-        saveNotesToLocalStorage(movie, movieElement);
-    });
-};
-// Save Notes to local storage
-const saveNotesToLocalStorage = (movie, movieElement)=>{
-    const notesIcon = movieElement.querySelector("#notes-icon");
-    notesIcon.addEventListener("click", ()=>{
-        const dialogOverlay = document.querySelector("#dialogOverlay");
-        const noteText = document.querySelector("#noteText");
-        const saveBtn = document.querySelector("#saveBtn");
-        const closeBtn = document.querySelector("#closeBtn");
-        const storageKey = "Notes";
-        const savedNotes = JSON.parse(localStorage.getItem(storageKey)) || [];
-        const existingNote = savedNotes.find((n)=>n.id === movie.id);
-        console.log(savedNotes[0].id + " " + movie.id);
-        noteText.value = existingNote ? existingNote.content : "";
-        dialogOverlay.classList.remove("hidden");
-        saveBtn.onclick = ()=>{
-            const filtered = savedNotes.filter((n)=>n.id !== movie.id);
-            if (noteText.value.trim()) filtered.push({
-                id: movie.id,
-                content: noteText.value.trim()
-            });
-            localStorage.setItem(storageKey, JSON.stringify(filtered));
-            dialogOverlay.classList.add("hidden");
-        };
-        closeBtn.onclick = ()=>dialogOverlay.classList.add("hidden");
-        dialogOverlay.onclick = (e)=>{
-            if (e.target === dialogOverlay) dialogOverlay.classList.add("hidden");
-        };
+        (0, _storageJs.saveNotesToLocalStorage)(movie, movieElement);
     });
 };
 getMovieFromLocalStorage();
 
-},{"../search.js":"gZ0W8","../app.js":"2R06K"}]},["8YqUS","cc4Va"], "cc4Va", "parcelRequire8370", {})
+},{"../search.js":"gZ0W8","../app.js":"2R06K","../../storage.js":"eOB4E"}]},["i4KxG","cc4Va"], "cc4Va", "parcelRequire8370", {})
 
 //# sourceMappingURL=journal.835906cd.js.map

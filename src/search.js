@@ -1,7 +1,8 @@
+import { fetchSearchList } from "../network.js";
+
 const searchBtn = document.getElementById("searchBtn");
 const searchBox = document.getElementById("searchInput");
 const suggestions = document.getElementById("suggestions");
-const api_key = "db85a489a7f0131f0f43f57e6a905f19";
 
 const searchEventListners = () => {
   searchBtn.addEventListener("click", (e) => {
@@ -22,17 +23,7 @@ const searchEventListners = () => {
 
 const renderSearchList = () => {
   //fetching Search list from The Movie Database API
-  const fetchSearchList = async (queryP) => {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/search/movie?query=${queryP}&
-    include_adult=false&language=en-US&page=1&api_key=${api_key}`
-    );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data.results;
-  };
+  fetchSearchList();
 
   //Rendering Search list to the DOM
   const renderSearchList = (movies, query) => {

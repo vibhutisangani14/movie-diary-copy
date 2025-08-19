@@ -4,8 +4,8 @@
     "parcel": "^2.15.4"
   },
   "scripts": {
-    "dev": "parcel src/index.html src/journal.html",
-    "build": "parcel build src/index.html src/journal.html"
+    "dev": "parcel src/index.html src/journal/journal.html",
+    "build": "parcel build src/index.html src/journal/journal.html"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.12",
