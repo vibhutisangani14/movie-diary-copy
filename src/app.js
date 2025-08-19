@@ -1,0 +1,114 @@
+import { renderSearchList, searchEventListners } from "./search.js";
+import {
+  saveMovieToLocalStorage,
+  saveNotesToLocalStorage,
+} from "../storage.js";
+import { fetchMovieList } from "../network.js";
+
+const movieListContainer = document.querySelector("#movieList-container");
+
+searchEventListners();
+renderSearchList();
+
+//Rendering movie list to the DOM
+const renderMovieList = (movies) => {
+  movies.forEach((movie) => {
+    const movieElement = document.createElement("div");
+
+    movieElement.className = "max-auto  text-white rounded-lg shadow-md";
+
+    const currentFavourites =
+      JSON.parse(localStorage.getItem("favouriteMovie")) || [];
+    const isFavourite = currentFavourites.some((m) => m.id === movie.id);
+
+    //overview text
+    const shortOverview =
+      movie.overview.length > 100
+        ? movie.overview.slice(0, 100) + "..."
+        : movie.overview;
+
+    movieElement.innerHTML = `
+      <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${
+      movie.title
+    } poster" 
+        class="border-gray-800 rounded-lg border-4 hover:border-white
+        transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg mb-2"/>
+      <div class="p-2 flex justify-between">
+        <h1 class="text-2xl font-bold mb-2 w-5/6">${movie.title}</h1>
+        <svg xmlns="http://www.w3.org/2000/svg" 
+             fill="${isFavourite ? "red" : "none"}" 
+             viewBox="0 0 24 24" stroke-width="1.5" 
+             stroke="currentColor" 
+             class="w-5 h-5 cursor-pointer fav-icon hover:scale-110 transition-transform w-1/6 mt-1">
+          <path stroke-linecap="round" stroke-linejoin="round" 
+                d="M21.435 4.582a5.373 5.373 0 00-7.606 0L12 6.41l-1.829-1.828a5.373 5.373 0 00-7.606 7.606l1.828 1.828L12 21.435l7.607-7.606 1.828-1.828a5.373 5.373 0 000-7.606z" />
+        </svg>
+          <svg
+          xmlns="http://www.w3.org/2000/svg"
+          id="notes-icon"
+          class="ml-2 w-5 h-5 text-center cursor-pointer mt-1"
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="feather feather-file-text"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+          />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <line x1="10" y1="9" x2="8" y2="9" />
+        </svg>
+      </div>
+      <p class="text-gray-300">
+        Info: <span class="short-text">${shortOverview}</span>
+        <span class="full-text hidden">${movie.overview}</span>
+        <button class="toggle-btn text-blue-400 underline ml-1">Read more</button>
+      </p>
+    `;
+    movieListContainer?.appendChild(movieElement);
+    toggleOverviewText(movieElement);
+    saveMovieToLocalStorage(movie, movieElement);
+    saveNotesToLocalStorage(movie, movieElement);
+  });
+};
+
+// Add toggle functionality
+const toggleOverviewText = (movieElement) => {
+  const toggleBtn = movieElement.querySelector(".toggle-btn");
+  const shortText = movieElement.querySelector(".short-text");
+  const fullText = movieElement.querySelector(".full-text");
+
+  toggleBtn.addEventListener("click", () => {
+    if (fullText.classList.contains("hidden")) {
+      shortText.classList.add("hidden");
+      fullText.classList.remove("hidden");
+      toggleBtn.textContent = "Read less";
+    } else {
+      shortText.classList.remove("hidden");
+      fullText.classList.add("hidden");
+      toggleBtn.textContent = "Read more";
+    }
+  });
+};
+
+// Fetching and rendering the movie list
+const fetchAndRenderMovieList = async () => {
+  try {
+    const movies = await fetchMovieList();
+    console.log("Fetched movies:", movies);
+    renderMovieList(movies);
+  } catch (error) {
+    console.error("Error fetching movie list:", error);
+    return;
+  }
+};
+fetchAndRenderMovieList();
+
+export { toggleOverviewText };
