@@ -933,14 +933,31 @@ const toggleOverviewText = (movieElement)=>{
         }
     });
 };
+const renderErrorMessage = (message)=>{
+    if (!movieListContainer) return;
+    movieListContainer.innerHTML = `
+    <div class="flex justify-center items-center w-full">
+      <div class="max-w-md w-full text-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" role="alert">
+        <strong class="font-bold">Error: </strong>
+        <span class="block sm:inline">${message}</span>
+      </div>
+    </div>
+  `;
+};
 // Fetching and rendering the movie list
 const fetchAndRenderMovieList = async ()=>{
     try {
         const movies = await (0, _networkJs.fetchMovieList)();
+        if (!movies || movies.length === 0) {
+            console.warn("No movies found from API.");
+            renderMovieList([]);
+            return;
+        }
         console.log("Fetched movies:", movies);
         renderMovieList(movies);
     } catch (error) {
         console.error("Error fetching movie list:", error);
+        renderErrorMessage("Failed to load movies. Please try again later.");
         return;
     }
 };
