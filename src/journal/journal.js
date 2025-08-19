@@ -1,6 +1,6 @@
 import { renderSearchList, searchEventListners } from "../search.js";
 import { toggleOverviewText } from "../app.js";
-import { saveNotesToLocalStorage } from "../../storage.js";
+import { saveNotesToLocalStorage } from "../storage.js";
 
 const movieListContainer = document.querySelector("#movieList-journal");
 

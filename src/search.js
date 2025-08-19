@@ -1,12 +1,19 @@
-import { fetchSearchList } from "../network.js";
+import { fetchSearchList } from "./network.js";
+import { renderErrorMessage } from "./utils.js";
 
 const searchBtn = document.getElementById("searchBtn");
 const searchBox = document.getElementById("searchInput");
 const suggestions = document.getElementById("suggestions");
 
+/**
+ * Adds event listeners for the search UI
+ * - Clicking the search button expands the search box.
+ * - Clicking outside the search box collapses it.
+ */
 const searchEventListners = () => {
   searchBtn.addEventListener("click", (e) => {
-    e.stopPropagation(); // Prevent closing immediately
+    // Prevent closing immediately
+    e.stopPropagation();
     searchBox.classList.remove("w-0", "opacity-0", "mx-0");
     searchBox.classList.add("w-64", "opacity-100", "mx-2");
     searchBox.focus();
@@ -25,11 +32,17 @@ const renderSearchList = () => {
   //fetching Search list from The Movie Database API
   fetchSearchList();
 
-  //Rendering Search list to the DOM
+  /**
+   * Renders a filtered list of movies into the dialog.
+   *
+   * @param {Array} movies - Array of movie objects from the API.
+   * @param {string} query - Current search input text to filter movies.
+   */
   const renderSearchList = (movies, query) => {
     const filtered = movies.filter((movie) =>
       movie.title.toLowerCase().includes(query)
     );
+
     filtered.forEach((movie) => {
       const div = document.createElement("div");
 
@@ -55,18 +68,28 @@ const renderSearchList = () => {
     });
   };
 
-  // Fetching and rendering the Search list
+  /**
+   * Fetches movies and render results.
+   *
+   * @param {string} query - The search query input.
+   */
   const fetchAndRenderSearchList = async (query) => {
     try {
       const movies = await fetchSearchList(query);
+      if (!movies || movies.length === 0) {
+        console.warn("No Movies found");
+        renderSearchList([]);
+      }
       console.log("Fetched movies:", movies);
       renderSearchList(movies, query);
     } catch (error) {
       console.error("Error fetching movie list:", error);
+      renderErrorMessage("failed to load movies please try again");
       return;
     }
   };
 
+  // Listen for input changes display suggestions
   searchBox.addEventListener("input", () => {
     const query = searchBox.value.toLowerCase();
     suggestions.innerHTML = "";
@@ -78,6 +101,7 @@ const renderSearchList = () => {
     }
   });
 
+  // Hide suggestions if user clicks outside search box list
   document.addEventListener("click", (event) => {
     if (
       !event.target.closest("#searchBox") &&
@@ -88,5 +112,4 @@ const renderSearchList = () => {
   });
 };
 
-export { searchEventListners };
-export { renderSearchList };
+export { searchEventListners, renderSearchList };
