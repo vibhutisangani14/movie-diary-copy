@@ -1,13 +1,22 @@
+// Importing functions for search rendering and event handling
 import { renderSearchList, searchEventListners } from "../search.js";
 import { toggleOverviewText } from "../app.js";
 import { saveNotesToLocalStorage } from "../storage.js";
 
+// DOM element container for the movie journal
 const movieListContainer = document.querySelector("#movieList-journal");
 
 searchEventListners();
 renderSearchList();
 
+/**
+ * Fetches favorite movies from localStorage and renders them to the DOM.
+ * Also enables toggling of the movie overview text and saving notes per movie.
+ *
+ * @function getMovieFromLocalStorage
+ */
 const getMovieFromLocalStorage = () => {
+  // Get favorite movies from localStorage, defaulting to empty array
   const favouriteMovies =
     JSON.parse(localStorage.getItem("favouriteMovie")) || [];
   movieListContainer.innerHTML = ""; // Clear existing content
@@ -20,6 +29,8 @@ const getMovieFromLocalStorage = () => {
 
     const movieElement = document.createElement("div");
     movieElement.className = "max-auto text-white rounded-lg shadow-md";
+
+    // Set inner HTML of movie element with poster, title, notes icon, and overview;
     movieElement.innerHTML = `
       <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title} poster" 
         class="border-gray-800 rounded-lg border-4 hover:border-white
@@ -59,8 +70,11 @@ const getMovieFromLocalStorage = () => {
     `;
     movieListContainer.appendChild(movieElement);
     toggleOverviewText(movieElement);
+
+    // Enable saving of notes for this movie to localStorage
     saveNotesToLocalStorage(movie, movieElement);
   });
 };
 
+// Execute function to render favorite movies on page load
 getMovieFromLocalStorage();

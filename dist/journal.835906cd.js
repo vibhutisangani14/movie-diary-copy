@@ -667,13 +667,21 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 }
 
 },{}],"cc4Va":[function(require,module,exports,__globalThis) {
+// Importing functions for search rendering and event handling
 var _searchJs = require("../search.js");
 var _appJs = require("../app.js");
 var _storageJs = require("../../storage.js");
+// DOM element container for the movie journal
 const movieListContainer = document.querySelector("#movieList-journal");
 (0, _searchJs.searchEventListners)();
 (0, _searchJs.renderSearchList)();
-const getMovieFromLocalStorage = ()=>{
+/**
+ * Fetches favorite movies from localStorage and renders them to the DOM.
+ * Also enables toggling of the movie overview text and saving notes per movie.
+ *
+ * @function getMovieFromLocalStorage
+ */ const getMovieFromLocalStorage = ()=>{
+    // Get favorite movies from localStorage, defaulting to empty array
     const favouriteMovies = JSON.parse(localStorage.getItem("favouriteMovie")) || [];
     movieListContainer.innerHTML = ""; // Clear existing content
     favouriteMovies.forEach((movie)=>{
@@ -681,6 +689,7 @@ const getMovieFromLocalStorage = ()=>{
         const shortOverview = movie.overview.length > 100 ? movie.overview.slice(0, 100) + "..." : movie.overview;
         const movieElement = document.createElement("div");
         movieElement.className = "max-auto text-white rounded-lg shadow-md";
+        // Set inner HTML of movie element with poster, title, notes icon, and overview;
         movieElement.innerHTML = `
       <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title} poster" 
         class="border-gray-800 rounded-lg border-4 hover:border-white
@@ -720,9 +729,11 @@ const getMovieFromLocalStorage = ()=>{
     `;
         movieListContainer.appendChild(movieElement);
         (0, _appJs.toggleOverviewText)(movieElement);
+        // Enable saving of notes for this movie to localStorage
         (0, _storageJs.saveNotesToLocalStorage)(movie, movieElement);
     });
 };
+// Execute function to render favorite movies on page load
 getMovieFromLocalStorage();
 
 },{"../search.js":"gZ0W8","../app.js":"2R06K","../../storage.js":"eOB4E"}]},["i4KxG","cc4Va"], "cc4Va", "parcelRequire8370", {})

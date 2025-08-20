@@ -1,37 +1,47 @@
+// Importing necessary functions from other modules
 import { renderSearchList, searchEventListners } from "./search.js";
 import { saveMovieToLocalStorage, saveNotesToLocalStorage } from "./storage.js";
 import { fetchMovieList } from "./network.js";
 
+// Container where movies will be rendered
 const movieListContainer = document.querySelector("#movieList-container");
 
+// Initialize search functionality
 searchEventListners();
 renderSearchList();
 
-//Rendering movie list to the DOM
+/**
+ * Renders a list of movies into the DOM.
+ * @param {Array} movies - Array of movie objects fetched from API.
+ */
 const renderMovieList = (movies) => {
   movies.forEach((movie) => {
     const movieElement = document.createElement("div");
+    movieElement.className = "max-auto text-white rounded-lg shadow-md";
 
-    movieElement.className = "max-auto  text-white rounded-lg shadow-md";
-
+    // Get current favourite movies from localStorage
     const currentFavourites =
       JSON.parse(localStorage.getItem("favouriteMovie")) || [];
     const isFavourite = currentFavourites.some((m) => m.id === movie.id);
 
-    //overview text
+    // Shorten movie overview if it's too long
     const shortOverview =
       movie.overview.length > 100
         ? movie.overview.slice(0, 100) + "..."
         : movie.overview;
 
+    // Movie card HTML structure
     movieElement.innerHTML = `
       <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${
       movie.title
     } poster" 
         class="border-gray-800 rounded-lg border-4 hover:border-white
         transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg mb-2"/>
+      
       <div class="p-2 flex justify-between">
         <h1 class="text-2xl font-bold mb-2 w-5/6">${movie.title}</h1>
+        
+        <!-- Favourite Icon -->
         <svg xmlns="http://www.w3.org/2000/svg" 
              fill="${isFavourite ? "red" : "none"}" 
              viewBox="0 0 24 24" stroke-width="1.5" 
@@ -40,7 +50,9 @@ const renderMovieList = (movies) => {
           <path stroke-linecap="round" stroke-linejoin="round" 
                 d="M21.435 4.582a5.373 5.373 0 00-7.606 0L12 6.41l-1.829-1.828a5.373 5.373 0 00-7.606 7.606l1.828 1.828L12 21.435l7.607-7.606 1.828-1.828a5.373 5.373 0 000-7.606z" />
         </svg>
-          <svg
+        
+        <!-- Notes Icon -->
+        <svg
           xmlns="http://www.w3.org/2000/svg"
           id="notes-icon"
           class="ml-2 w-5 h-5 text-center cursor-pointer mt-1"
@@ -63,20 +75,31 @@ const renderMovieList = (movies) => {
           <line x1="10" y1="9" x2="8" y2="9" />
         </svg>
       </div>
+
+      <!-- Movie Overview -->
       <p class="text-gray-300">
         Info: <span class="short-text">${shortOverview}</span>
         <span class="full-text hidden">${movie.overview}</span>
         <button class="toggle-btn text-blue-400 underline ml-1">Read more</button>
       </p>
     `;
+
+    // Append movie card to container
     movieListContainer?.appendChild(movieElement);
+
+    // Add toggle functionality for overview text
     toggleOverviewText(movieElement);
+
+    // Save favourite movies and notes to localStorage
     saveMovieToLocalStorage(movie, movieElement);
     saveNotesToLocalStorage(movie, movieElement);
   });
 };
 
-// Add toggle functionality
+/**
+ * Adds "Read more / Read less" toggle functionality for movie overview.
+ * @param {HTMLElement} movieElement - The movie card element.
+ */
 const toggleOverviewText = (movieElement) => {
   const toggleBtn = movieElement.querySelector(".toggle-btn");
   const shortText = movieElement.querySelector(".short-text");
@@ -95,17 +118,44 @@ const toggleOverviewText = (movieElement) => {
   });
 };
 
-// Fetching and rendering the movie list
+/**
+ * Renders an error message on the UI.
+ * @param {string} message - The error message to display
+ */
+const renderErrorMessage = (message) => {
+  if (!movieListContainer) return;
+  movieListContainer.innerHTML = `
+    <div class="flex justify-center items-center w-full">
+      <div class="max-w-md w-full text-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" role="alert">
+        <strong class="font-bold">Error: </strong>
+        <span class="block sm:inline">${message}</span>
+      </div>
+    </div>
+  `;
+};
+
+/**
+ * Fetches movie list from API and renders it.
+ * Displays error message if fetch fails.
+ */
 const fetchAndRenderMovieList = async () => {
   try {
     const movies = await fetchMovieList();
+
+    if (!movies || movies.length === 0) {
+      console.warn("No movies found from API.");
+      renderMovieList([]);
+      return;
+    }
     console.log("Fetched movies:", movies);
     renderMovieList(movies);
   } catch (error) {
     console.error("Error fetching movie list:", error);
-    return;
+    renderErrorMessage("Failed to load movies. Please try again later.");
   }
 };
+
+// Fetch movies on page load
 fetchAndRenderMovieList();
 
 export { toggleOverviewText };
