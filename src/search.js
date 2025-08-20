@@ -4,6 +4,7 @@ import { renderErrorMessage } from "./utils.js";
 const searchBtn = document.getElementById("searchBtn");
 const searchBox = document.getElementById("searchInput");
 const suggestions = document.getElementById("suggestions");
+const clearBtn = document.getElementById("clearBtn");
 
 /**
  * Adds event listeners for the search UI
@@ -15,16 +16,29 @@ const searchEventListners = () => {
     // Prevent closing immediately
     e.stopPropagation();
     searchBox.classList.remove("w-0", "opacity-0", "mx-0");
-    searchBox.classList.add("w-64", "opacity-100", "mx-2");
+    searchBox.classList.add("w-64", "opacity-100", "mx-2", "pr-6");
     searchBox.focus();
+
+    if (searchInput.value.trim() !== "") {
+      clearBtn.classList.remove("hidden");
+    } else {
+      clearBtn.classList.add("hidden");
+    }
   });
 
   document.addEventListener("click", (e) => {
     if (!searchWrapper.contains(e.target)) {
-      searchBox.classList.remove("w-64", "opacity-100", "mx-2");
+      searchBox.classList.remove("w-64", "opacity-100", "mx-2", "pr-6");
       searchBox.classList.add("w-0", "opacity-0", "mx-0");
       searchBox.blur();
+      clearBtn.classList.add("hidden");
     }
+  });
+
+  clearBtn.addEventListener("click", (e) => {
+    searchInput.value = "";
+    clearBtn.classList.add("hidden");
+    searchInput.focus();
   });
 };
 
@@ -98,6 +112,12 @@ const renderSearchList = () => {
       fetchAndRenderSearchList(query);
     } else {
       suggestions.classList.add("hidden");
+    }
+
+    if (searchInput.value.trim() !== "") {
+      clearBtn.classList.remove("hidden");
+    } else {
+      clearBtn.classList.add("hidden");
     }
   });
 

@@ -56,9 +56,15 @@
                 placeholder="Search..."
                 class="w-0 opacity-0 transition-all duration-300 ease-in-out pl-3 py-1 mx-0 bg-gray-800 text-white placeholder:text-white placeholder:text-[0.9rem] rounded-full outline-none border border-gray-600 focus:border-white"
               />
+              <button
+                id="clearBtn"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-xl pb-1 text-white mr-3 cursor-pointer hidden"
+              >
+                &times;
+              </button>
               <div
                 id="suggestions"
-                class="absolute mt-1 w-full bg-gray-800 border text-white border-gray-300 rounded shadow-lg max-h-60 overflow-y-auto hidden"
+                class="absolute w-full mt-1 bg-gray-800 text-white border-gray-300 rounded shadow-lg max-h-60 overflow-y-auto hidden"
               ></div>
             </div>
           </div>
