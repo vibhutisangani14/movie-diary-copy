@@ -120,7 +120,7 @@ const toggleOverviewText = (movieElement) => {
 
 /**
  * Renders an error message on the UI.
- * @param {string} message - The error message to display.
+ * @param {string} message - The error message to display
  */
 const renderErrorMessage = (message) => {
   if (!movieListContainer) return;
