@@ -797,7 +797,28 @@ const renderSearchList = ()=>{
     });
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../network.js":"gukqw"}],"gkKU3":[function(require,module,exports,__globalThis) {
+},{"../network.js":"gukqw","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gukqw":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "fetchMovieList", ()=>fetchMovieList);
+parcelHelpers.export(exports, "fetchSearchList", ()=>fetchSearchList);
+const api_key = "db85a489a7f0131f0f43f57e6a905f19";
+//fetching movie list from The Movie Database API
+const fetchMovieList = async ()=>{
+    const response = await fetch(`https://api.themoviedb.org/3/movie/popular?language=en-US&page=1&api_key=${api_key}`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.results;
+};
+const fetchSearchList = async (queryP)=>{
+    const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${queryP}&
+    include_adult=false&language=en-US&page=1&api_key=${api_key}`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const data = await response.json();
+    return data.results;
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports,__globalThis) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -827,28 +848,7 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"gukqw":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "fetchMovieList", ()=>fetchMovieList);
-parcelHelpers.export(exports, "fetchSearchList", ()=>fetchSearchList);
-const api_key = "db85a489a7f0131f0f43f57e6a905f19";
-//fetching movie list from The Movie Database API
-const fetchMovieList = async ()=>{
-    const response = await fetch(`https://api.themoviedb.org/3/movie/popular?language=en-US&page=1&api_key=${api_key}`);
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const data = await response.json();
-    return data.results;
-};
-const fetchSearchList = async (queryP)=>{
-    const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${queryP}&
-    include_adult=false&language=en-US&page=1&api_key=${api_key}`);
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const data = await response.json();
-    return data.results;
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bNKaB":[function(require,module,exports,__globalThis) {
+},{}],"bNKaB":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "toggleOverviewText", ()=>toggleOverviewText);
@@ -963,7 +963,7 @@ const fetchAndRenderMovieList = async ()=>{
 };
 fetchAndRenderMovieList();
 
-},{"./search.js":"8gVq6","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../storage.js":"kS9sU","../network.js":"gukqw"}],"kS9sU":[function(require,module,exports,__globalThis) {
+},{"./search.js":"8gVq6","../storage.js":"kS9sU","../network.js":"gukqw","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kS9sU":[function(require,module,exports,__globalThis) {
 // Save movie to local storage
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
