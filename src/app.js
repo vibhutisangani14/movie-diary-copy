@@ -1,5 +1,5 @@
 // Importing necessary functions from other modules
-import { renderSearchList, searchEventListners } from "./search.js";
+import { displaySearchList, searchEventListners } from "./search.js";
 import { saveMovieToLocalStorage, saveNotesToLocalStorage } from "./storage.js";
 import { fetchMovieList } from "./network.js";
 
@@ -8,7 +8,7 @@ const movieListContainer = document.querySelector("#movieList-container");
 
 // Initialize search functionality
 searchEventListners();
-renderSearchList();
+displaySearchList();
 
 /**
  * Renders a list of movies into the DOM.

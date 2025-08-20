@@ -42,10 +42,7 @@ const searchEventListners = () => {
   });
 };
 
-const renderSearchList = () => {
-  //fetching Search list from The Movie Database API
-  fetchSearchList();
-
+const displaySearchList = () => {
   /**
    * Renders a filtered list of movies into the dialog.
    *
@@ -56,14 +53,20 @@ const renderSearchList = () => {
     const filtered = movies.filter((movie) =>
       movie.title.toLowerCase().includes(query)
     );
+    if (!filtered || filtered.length === 0) {
+      suggestions.innerHTML = "";
+      const text = document.createElement("p");
+      text.textContent = "No results found";
+      text.className = "text-center p-[60px]";
+      suggestions.appendChild(text);
+    } else {
+      filtered.forEach((movie) => {
+        const div = document.createElement("div");
 
-    filtered.forEach((movie) => {
-      const div = document.createElement("div");
+        div.className =
+          "flex flex-row px-3 py-2 hover:bg-gray-700 cursor-pointer";
 
-      div.className =
-        "flex flex-row px-3 py-2 hover:bg-gray-700 cursor-pointer";
-
-      div.innerHTML = `
+        div.innerHTML = `
      <img
                     src="https://image.tmdb.org/t/p/w500/${movie.poster_path}"
                     alt="demo"
@@ -73,13 +76,14 @@ const renderSearchList = () => {
                     <div class="ml-2 text-[0.8rem]">${movie.title}</div>
                   </div>`;
 
-      div.addEventListener("click", () => {
-        searchBox.value = movie.title;
-        suggestions.classList.add("hidden");
+        div.addEventListener("click", () => {
+          searchBox.value = movie.title;
+          suggestions.classList.add("hidden");
+        });
+        suggestions.appendChild(div);
+        suggestions.classList.toggle("hidden", filtered.length === 0);
       });
-      suggestions.appendChild(div);
-      suggestions.classList.toggle("hidden", filtered.length === 0);
-    });
+    }
   };
 
   /**
@@ -93,9 +97,10 @@ const renderSearchList = () => {
       if (!movies || movies.length === 0) {
         console.warn("No Movies found");
         renderSearchList([]);
+      } else {
+        console.log("Fetched movies:", movies);
+        renderSearchList(movies, query);
       }
-      console.log("Fetched movies:", movies);
-      renderSearchList(movies, query);
     } catch (error) {
       console.error("Error fetching movie list:", error);
       renderErrorMessage("failed to load movies please try again");
@@ -132,4 +137,4 @@ const renderSearchList = () => {
   });
 };
 
-export { searchEventListners, renderSearchList };
+export { searchEventListners, displaySearchList };
