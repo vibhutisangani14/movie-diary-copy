@@ -79,7 +79,10 @@
           class="w-full h-[50vh] object-cover"
         />
       </section>
-      <section>
+      <section
+        id="movieList-container"
+        class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-5 p-4 m-4"
+      >
         <div
           id="dialogOverlay"
           class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden"
@@ -110,12 +113,6 @@
             </div>
           </div>
         </div>
-      </section>
-
-      <section
-        id="movieList-container"
-        class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-5 p-4 m-4"
-      >
         <!-- Movie cards will be rendered here -->
       </section>
     </main>

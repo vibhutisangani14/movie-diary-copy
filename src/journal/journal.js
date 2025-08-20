@@ -1,7 +1,7 @@
 // Importing functions for search rendering and event handling
 import { renderSearchList, searchEventListners } from "../search.js";
 import { toggleOverviewText } from "../app.js";
-import { saveNotesToLocalStorage } from "../../storage.js";
+import { saveNotesToLocalStorage } from "../storage.js";
 
 // DOM element container for the movie journal
 const movieListContainer = document.querySelector("#movieList-journal");
